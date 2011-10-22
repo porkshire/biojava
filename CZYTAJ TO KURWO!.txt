@@ -1,0 +1,6 @@
+http://biojava.org/wiki/BioJava:Download_1.8
+instruction: biojave 1.8 dodaj normalnie jak biblioteke do projektu biojava_test
+do projektu BioJava3 dodaj jnlp.jar, Jmol.jar, forester-0.995.jar
+zbuduj BioJava3 i jar z niego dodaj do projektu biojava_test
+dodaj forester-0.955.jar (wczesniej sie pomylilem - to mialo byc 0.955) do biojava_test
+i mozesz go w koncu zbudowac
