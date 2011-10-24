@@ -19,6 +19,7 @@ import org.biojava3.phylo.TreeConstructionAlgorithm;
 import org.biojava3.phylo.TreeConstructor;
 import org.biojava3.phylo.TreeType;
 import org.biojavax.bio.seq.RichSequence;
+import trees.TreeBuilder;
 
 /**
  *
@@ -31,49 +32,29 @@ public class Biojava_test {
     
     public static void main(String[] args) 
     {
-        inputGenerator = new InputGenerator("resources/genbank.txt", InputType.GENBANK);
+        inputGenerator = new InputGenerator("C:\\Users\\DanielWegner\\Desktop\\PhylogenicTree\\biojava\\bj\\biojava_test\\resources\\genbank.txt", InputType.GENBANK);
         //inputGenerator = new InputGenerator("resources/genotype.txt", InputType.FESTA);
         sequences = inputGenerator.readInput();
 
         DNASequence seq;
-        ProteinSequence ps;
-        List<ProteinSequence> list = new ArrayList<ProteinSequence>();
+        //ProteinSequence ps;
+        List<DNASequence> list = new ArrayList<DNASequence>();
         for(RichSequence rs : sequences) {
              seq = new DNASequence(rs.seqString());
-             ps = seq.getRNASequence().getProteinSequence();
-             list.add(ps);
+             seq.setAccession(new AccessionID(rs.getAccession()));
+             //ps = seq.getRNASequence().getProteinSequence();
+             //ps.setAccession(new AccessionID(rs.getAccession()));
+             list.add(seq);
         }
-
-        Profile<ProteinSequence, AminoAcidCompound> profile = Alignments.getMultipleSequenceAlignment(list);
-        System.out.println("OK");
-        MultipleSequenceAlignment<ProteinSequence, AminoAcidCompound> msa = new MultipleSequenceAlignment<ProteinSequence, AminoAcidCompound>();
-        for(int i = 0; i < sequences.size(); i++) {
-            ps = new ProteinSequence(profile.getAlignedSequence(i+1).getSequenceAsString());
-            ps.setAccession(new AccessionID(sequences.get(i).getName()));
-            msa.addAlignedSequence(ps);
-            System.out.println("OK");
-        }
-        System.out.println("OK" + msa.getSize());
 
         /*System.out.println("Sekwencje:");
         for (ProteinSequence ps : msa.getAlignedSequences())
             System.out.println(ps.getSequenceAsString());*/
-
-        String treeStr = null;
-        TreeConstructor<ProteinSequence, AminoAcidCompound> treeConstructor = new TreeConstructor<ProteinSequence, AminoAcidCompound>(msa, TreeType.NJ, TreeConstructionAlgorithm.PID, new ProgessListenerStub());
-
-        try 
-        {
-            treeConstructor.process();
-            treeStr = treeConstructor.getNewickString(true, true);
-        } 
-        catch (Exception ex) 
-        {
-            Logger.getLogger(Biojava_test.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        
+        TreeBuilder t = new TreeBuilder(list);
+        String s = t.NeighbourJoining();
+        System.out.println(s);
         System.out.println("OK-END");
-        System.out.println(treeStr);
         System.exit(0);
     }
 }
