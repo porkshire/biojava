@@ -52,7 +52,7 @@ public class Biojava_test {
             System.out.println(ps.getSequenceAsString());*/
         
         TreeBuilder t = new TreeBuilder(list);
-        String s = t.NeighbourJoining();
+        String s = t.getTree();
         System.out.println(s);
         System.out.println("OK-END");
         System.exit(0);

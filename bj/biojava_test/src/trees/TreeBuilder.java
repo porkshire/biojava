@@ -4,29 +4,21 @@
  */
 package trees;
 
-import java.lang.String;
-import java.util.AbstractList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.biojava.bio.seq.io.ParseException;
 import org.biojava3.alignment.Alignments;
 import org.biojava3.alignment.template.AlignedSequence;
 import org.biojava3.alignment.template.Profile;
-import org.biojava3.core.sequence.DNASequence;
 import org.biojava3.core.sequence.MultipleSequenceAlignment;
 import org.biojava3.core.sequence.DNASequence;
-import org.biojava3.core.sequence.compound.AminoAcidCompound;
-import org.biojava3.core.sequence.compound.CodonCompound;
 import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.biojava3.core.sequence.template.Sequence;
-import org.biojavax.bio.phylo.DistanceBasedTreeMethod;
-import org.biojavax.bio.phylo.io.nexus.CharactersBlock;
-import org.biojavax.bio.phylo.io.nexus.TaxaBlock;
-import org.jgrapht.WeightedGraph;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleWeightedGraph;
+import org.biojava3.phylo.ProgessListenerStub;
+import org.biojava3.phylo.TreeConstructionAlgorithm;
+import org.biojava3.phylo.TreeConstructor;
+import org.biojava3.phylo.TreeType;
 
 /**
  *
@@ -36,6 +28,7 @@ public class TreeBuilder {
     
     private List<DNASequence> sequences;
     private MultipleSequenceAlignment<DNASequence, NucleotideCompound> multipleSequenceAlignment;
+    private TreeConstructor<DNASequence, NucleotideCompound> treeConstructor = null;
     
     public TreeBuilder()
     {
@@ -89,80 +82,37 @@ public class TreeBuilder {
         }
     }
     
+    
+    
     /**
      * Budowanie drzewa metodą Neighbour Joining.
      * http://en.wikipedia.org/wiki/Neighbour_joining
-     * @return 
+     * @return drzewo w formacie Newick
      */
-    public String NeighbourJoining()
+    public String getTree()
     {
         alignSequences();
-        
-        //taxa = nazwy sekwencji
-        TaxaBlock t = buildTaxaBlock();
-        
-        //characters = nazwy + ciagi
-        CharactersBlock ch = buildCharactersBlock();
-
-        WeightedGraph<String, DefaultWeightedEdge> a =  new SimpleWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class);
-        a = DistanceBasedTreeMethod.NeighborJoining(t, ch);
-        return a.toString();
-    }
-    
-    public String UPGMA()
-    {
-        
-        return "Brak implementacji";
-    }
-    
-    public String MaximumParsimony()
-    {
-        
-        return "Brak implementacji";
-    }
-    
-    private TaxaBlock buildTaxaBlock()
-    {
-        //taxa = nazwy sekwencji
-        TaxaBlock t = new TaxaBlock();
-        t.setDimensionsNTax(multipleSequenceAlignment.getSize());
-        for (int i = 0; i < multipleSequenceAlignment.getSize(); i++)
-        {
-            DNASequence p = multipleSequenceAlignment.getAlignedSequence(i + 1);
-            try {
-                t.addTaxLabel(p.getAccession().getID());
-            } catch (ParseException ex) {
-                Logger.getLogger(TreeBuilder.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return t;
-       
-    }
-    
-    private CharactersBlock buildCharactersBlock()
-    {
-
-        
-        //characters = nazwy + ciagi
-        CharactersBlock ch = new CharactersBlock();
-        
-        ch.setGap("-");
-        
-        //wlasciwosci danych
-        ch.setDimensionsNTax(multipleSequenceAlignment.getSize());
-        ch.setDimensionsNChar(multipleSequenceAlignment.getSize());
-        
-        
-        //ustawianie etykiet i danych
-        for (int i = 0; i < multipleSequenceAlignment.getSize(); i++)
-        {
-            DNASequence p = multipleSequenceAlignment.getAlignedSequence(i + 1);
-            ch.addCharLabel(p.getSequenceAsString());
-            ch.addMatrixEntry(p.getAccession().getID());
-            ch.appendMatrixData(p.getAccession().getID(), p.getSequenceAsString());
+        String newick = null;
+        treeConstructor = new TreeConstructor<DNASequence, NucleotideCompound>(multipleSequenceAlignment, TreeType.NJ, TreeConstructionAlgorithm.PID, new ProgessListenerStub());
+        try {
+            treeConstructor.process();
+            newick = treeConstructor.getNewickString(false, true);
+        } catch (Exception ex) {
+            Logger.getLogger(TreeBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        return ch;
+        return newick;
     }
     
+    public void getPhylipDistances(String filename)
+    {
+        try {
+            treeConstructor.outputPhylipDistances(filename);
+        } catch (Exception ex) {
+            Logger.getLogger(TreeBuilder.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+
 }
