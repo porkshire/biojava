@@ -7,17 +7,7 @@ import biojava_test.input.InputGenerator;
 import biojava_test.input.InputType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.biojava3.alignment.Alignments;
-import org.biojava3.alignment.template.Profile;
 import org.biojava3.core.sequence.*;
-import org.biojava3.core.sequence.ProteinSequence;
-import org.biojava3.core.sequence.compound.AminoAcidCompound;
-import org.biojava3.phylo.ProgessListenerStub;
-import org.biojava3.phylo.TreeConstructionAlgorithm;
-import org.biojava3.phylo.TreeConstructor;
-import org.biojava3.phylo.TreeType;
 import org.biojavax.bio.seq.RichSequence;
 import trees.TreeBuilder;
 
@@ -32,7 +22,7 @@ public class Biojava_test {
     
     public static void main(String[] args) 
     {
-        inputGenerator = new InputGenerator("C:\\Users\\DanielWegner\\Desktop\\PhylogenicTree\\biojava\\bj\\biojava_test\\resources\\genbank.txt", InputType.GENBANK);
+        inputGenerator = new InputGenerator("C:\\Users\\Dans\\Desktop\\biojava\\bj\\biojava_test\\resources\\genbank.txt", InputType.GENBANK);
         //inputGenerator = new InputGenerator("resources/genotype.txt", InputType.FESTA);
         sequences = inputGenerator.readInput();
 
