@@ -27,14 +27,14 @@ public class Biojava_test {
         sequences = inputGenerator.readInput();
 
         DNASequence seq;
-        //ProteinSequence ps;
-        List<DNASequence> list = new ArrayList<DNASequence>();
+        ProteinSequence ps;
+        List<ProteinSequence> list = new ArrayList<ProteinSequence>();
         for(RichSequence rs : sequences) {
              seq = new DNASequence(rs.seqString());
              seq.setAccession(new AccessionID(rs.getAccession()));
-             //ps = seq.getRNASequence().getProteinSequence();
-             //ps.setAccession(new AccessionID(rs.getAccession()));
-             list.add(seq);
+             ps = seq.getRNASequence().getProteinSequence();
+             ps.setAccession(new AccessionID(rs.getAccession()));
+             list.add(ps);
         }
 
         /*System.out.println("Sekwencje:");
