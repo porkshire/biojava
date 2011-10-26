@@ -7,6 +7,8 @@ import biojava_test.input.InputGenerator;
 import biojava_test.input.InputType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.biojava3.core.sequence.*;
 import org.biojavax.bio.seq.RichSequence;
 import trees.TreeBuilder;
@@ -44,6 +46,11 @@ public class Biojava_test {
         TreeBuilder t = new TreeBuilder(list);
         String s = t.NeighbourJoining();
         System.out.println(s);
+        try {
+            t.checkAccuracy();
+        } catch (Exception ex) {
+            Logger.getLogger(Biojava_test.class.getName()).log(Level.SEVERE, null, ex);
+        }
         System.out.println("OK-END");
         System.exit(0);
     }

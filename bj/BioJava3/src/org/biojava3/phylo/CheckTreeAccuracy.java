@@ -17,6 +17,23 @@ import org.forester.phylogenyinference.DistanceMatrix;
  */
 public class CheckTreeAccuracy {
 
+    private double averageMatrixDistance;
+    private double averageTreeDistance;
+    private double averageTreeErrorDistance;
+    private int count;
+
+    public double getAverageMatrixDistance() {
+        return averageMatrixDistance / count;
+    }
+
+    public double getAverageTreeDistance() {
+        return averageTreeDistance / count;
+    }
+
+    public double getAverageTreeErrorDistance() {
+        return averageTreeErrorDistance / count;
+    }
+    
     public static DistanceMatrix copyMatrix(DistanceMatrix matrix) {
 
         DistanceMatrix distanceMatrix = new BasicSymmetricalDistanceMatrix(matrix.getSize());
@@ -42,10 +59,10 @@ public class CheckTreeAccuracy {
         for (PhylogenyNode node : externalNodes) {
             externalNodesHashMap.put(node.getNodeName(), node);
         }
-        int count = 0;
-        double averageMatrixDistance = 0.0;
-        double averageTreeDistance = 0.0;
-        double averageTreeErrorDistance = 0.0;
+        count = 0;
+        averageMatrixDistance = 0.0;
+        averageTreeDistance = 0.0;
+        averageTreeErrorDistance = 0.0;
         for (int row = 0; row < numSequences - 1; row++) {
             String nodeName1 = matrix.getIdentifier(row);
             PhylogenyNode node1 = externalNodesHashMap.get(nodeName1);
@@ -70,9 +87,9 @@ public class CheckTreeAccuracy {
             markPathToRoot(node1, false);
         }
 
-        System.out.println("Average matrix distance:" + averageMatrixDistance / count);
-        System.out.println("Average tree distance:" + averageTreeDistance / count);
-        System.out.println("Average error:" + averageTreeErrorDistance / count);
+        //System.out.println("Average matrix distance:" + averageMatrixDistance / count);
+        //System.out.println("Average tree distance:" + averageTreeDistance / count);
+        //System.out.println("Average error:" + averageTreeErrorDistance / count);
 
     }
 

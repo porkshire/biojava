@@ -15,10 +15,12 @@ import org.biojava3.core.sequence.MultipleSequenceAlignment;
 import org.biojava3.core.sequence.ProteinSequence;
 import org.biojava3.core.sequence.compound.AminoAcidCompound;
 import org.biojava3.core.sequence.template.Sequence;
+import org.biojava3.phylo.CheckTreeAccuracy;
 import org.biojava3.phylo.ProgessListenerStub;
 import org.biojava3.phylo.TreeConstructionAlgorithm;
 import org.biojava3.phylo.TreeConstructor;
 import org.biojava3.phylo.TreeType;
+import org.forester.phylogeny.Phylogeny;
 
 /**
  *
@@ -155,6 +157,15 @@ public class TreeBuilder {
         return newick;
     }
     
+    public void checkAccuracy() throws Exception
+    {
+        Phylogeny p = treeConstructor.getPhylogeny();
+        if (p == null)
+            throw new Exception("Run process() method before this one.");
+        CheckTreeAccuracy acc = new CheckTreeAccuracy();
+        acc.process(p, treeConstructor.getDistanceMatrix());
+        System.out.println(acc.toString());
+    }
    
     
 }
