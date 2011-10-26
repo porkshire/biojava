@@ -9,15 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.biojava3.alignment.Alignments;
-import org.biojava3.alignment.template.Profile;
 import org.biojava3.core.sequence.*;
-import org.biojava3.core.sequence.ProteinSequence;
-import org.biojava3.core.sequence.compound.AminoAcidCompound;
-import org.biojava3.phylo.ProgessListenerStub;
-import org.biojava3.phylo.TreeConstructionAlgorithm;
-import org.biojava3.phylo.TreeConstructor;
-import org.biojava3.phylo.TreeType;
 import org.biojavax.bio.seq.RichSequence;
 import trees.TreeBuilder;
 
@@ -32,19 +24,19 @@ public class Biojava_test {
     
     public static void main(String[] args) 
     {
-        inputGenerator = new InputGenerator("C:\\Users\\DanielWegner\\Desktop\\PhylogenicTree\\biojava\\bj\\biojava_test\\resources\\genbank.txt", InputType.GENBANK);
+        inputGenerator = new InputGenerator("C:\\Users\\Dans\\Desktop\\biojava\\bj\\biojava_test\\resources\\genbank.txt", InputType.GENBANK);
         //inputGenerator = new InputGenerator("resources/genotype.txt", InputType.FESTA);
         sequences = inputGenerator.readInput();
 
         DNASequence seq;
-        //ProteinSequence ps;
-        List<DNASequence> list = new ArrayList<DNASequence>();
+        ProteinSequence ps;
+        List<ProteinSequence> list = new ArrayList<ProteinSequence>();
         for(RichSequence rs : sequences) {
              seq = new DNASequence(rs.seqString());
              seq.setAccession(new AccessionID(rs.getAccession()));
-             //ps = seq.getRNASequence().getProteinSequence();
-             //ps.setAccession(new AccessionID(rs.getAccession()));
-             list.add(seq);
+             ps = seq.getRNASequence().getProteinSequence();
+             ps.setAccession(new AccessionID(rs.getAccession()));
+             list.add(ps);
         }
 
         /*System.out.println("Sekwencje:");
@@ -54,6 +46,11 @@ public class Biojava_test {
         TreeBuilder t = new TreeBuilder(list);
         String s = t.getTree();
         System.out.println(s);
+        try {
+            t.checkAccuracy();
+        } catch (Exception ex) {
+            Logger.getLogger(Biojava_test.class.getName()).log(Level.SEVERE, null, ex);
+        }
         System.out.println("OK-END");
         System.exit(0);
     }

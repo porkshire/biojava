@@ -12,13 +12,15 @@ import org.biojava3.alignment.Alignments;
 import org.biojava3.alignment.template.AlignedSequence;
 import org.biojava3.alignment.template.Profile;
 import org.biojava3.core.sequence.MultipleSequenceAlignment;
-import org.biojava3.core.sequence.DNASequence;
-import org.biojava3.core.sequence.compound.NucleotideCompound;
+import org.biojava3.core.sequence.ProteinSequence;
+import org.biojava3.core.sequence.compound.AminoAcidCompound;
 import org.biojava3.core.sequence.template.Sequence;
+import org.biojava3.phylo.CheckTreeAccuracy;
 import org.biojava3.phylo.ProgessListenerStub;
 import org.biojava3.phylo.TreeConstructionAlgorithm;
 import org.biojava3.phylo.TreeConstructor;
 import org.biojava3.phylo.TreeType;
+import org.forester.phylogeny.Phylogeny;
 
 /**
  *
@@ -26,29 +28,61 @@ import org.biojava3.phylo.TreeType;
  */
 public class TreeBuilder {
     
-    private List<DNASequence> sequences;
-    private MultipleSequenceAlignment<DNASequence, NucleotideCompound> multipleSequenceAlignment;
-    private TreeConstructor<DNASequence, NucleotideCompound> treeConstructor = null;
+    private List<ProteinSequence> sequences;
+    private MultipleSequenceAlignment<ProteinSequence, AminoAcidCompound> multipleSequenceAlignment;
+    private TreeConstructor<ProteinSequence, AminoAcidCompound> treeConstructor = null;
     
-    public TreeBuilder()
+    /*
+    private long maxMemoryUsed, timeCheckpoint;
+    private long timeStart;
+    
+    
+    private long getMaxMemoryUsed() 
     {
-        this.sequences = new LinkedList<DNASequence>();
-        multipleSequenceAlignment = null;
+        return maxMemoryUsed = Math.max(maxMemoryUsed, Runtime.getRuntime().totalMemory());
+    }
+ 
+    private long getTimeSinceCheckpoint() 
+    {
+        return System.nanoTime() - timeCheckpoint;
+    }
+ 
+    private long getTimeSinceStart() 
+    {
+        return System.nanoTime() - timeStart;
+    }
+ 
+    private void setCheckpoint() 
+    {
+        maxMemoryUsed = Math.max(maxMemoryUsed, Runtime.getRuntime().totalMemory());
+        timeCheckpoint = System.nanoTime();
     }
     
-    public TreeBuilder(List<DNASequence> sequences)
+     * 
+     */
+    public TreeBuilder()
+    {
+        this.sequences = new LinkedList<ProteinSequence>();
+        multipleSequenceAlignment = null;
+        //maxMemoryUsed = Runtime.getRuntime().totalMemory();
+        //timeStart = timeCheckpoint = System.nanoTime();
+    }
+    
+    public TreeBuilder(List<ProteinSequence> sequences)
     {
         this.sequences = sequences;
         multipleSequenceAlignment = null;
+        //maxMemoryUsed = Runtime.getRuntime().totalMemory();
+        //timeStart = timeCheckpoint = System.nanoTime();
     }
     
     /**
      * Dodawanie sekwencji proteinowej do listy tworzącej drzewo.
      * Aby uzyskać sekwencję proteinową z DNA należy użyć kolejno
-     * metod getRNA() i getDNASequence().
+     * metod getRNA() i getProteinSequence().
      * @param seq 
      */
-    public void addSequence(DNASequence seq)
+    public void addSequence(ProteinSequence seq)
     {
         this.sequences.add(seq);
     }
@@ -58,7 +92,7 @@ public class TreeBuilder {
      */
     public void reset()
     {
-        sequences = new LinkedList<DNASequence>();
+        sequences = new LinkedList<ProteinSequence>();
     }
     
     /**
@@ -69,50 +103,69 @@ public class TreeBuilder {
      */
     private void alignSequences()
     {
-        multipleSequenceAlignment = new MultipleSequenceAlignment<DNASequence, NucleotideCompound>();
-        Profile<DNASequence, NucleotideCompound> profile = Alignments.getMultipleSequenceAlignment(sequences); 
-        List<AlignedSequence<DNASequence, NucleotideCompound>> l = profile.getAlignedSequences();
-        DNASequence p;
+        /*
+        // Poniższy kod zmniejsza zużycie pamięci
+        
+        //etap 1
+        GapPenalty gaps = new SimpleGapPenalty();
+        SubstitutionMatrix<AminoAcidCompound> pid = new SimpleSubstitutionMatrix<AminoAcidCompound>();
+        List<PairwiseSequenceScorer<ProteinSequence, AminoAcidCompound>> scorers = Alignments.getAllPairsScorers(sequences, Alignments.PairwiseSequenceScorerType.GLOBAL_IDENTITIES, gaps, pid);
+        Alignments.runPairwiseScorers(scorers);
+        
+        //etap 2
+        GuideTree<ProteinSequence, AminoAcidCompound> tree = new GuideTree<ProteinSequence, AminoAcidCompound>(sequences, scorers);
+        scorers = null;
+        
+        //etap 3
+        Profile<ProteinSequence, AminoAcidCompound> profile = Alignments.getProgressiveAlignment(tree, Alignments.ProfileProfileAlignerType.LOCAL, gaps, pid);
+        
+         * 
+         */
+        multipleSequenceAlignment = new MultipleSequenceAlignment<ProteinSequence, AminoAcidCompound>();
+        Profile<ProteinSequence, AminoAcidCompound> profile = Alignments.getMultipleSequenceAlignment(sequences); 
+        List<AlignedSequence<ProteinSequence, AminoAcidCompound>> l = profile.getAlignedSequences();
+        ProteinSequence p;
         for (int i = 0; i < l.size(); i++)
         {
-            Sequence<NucleotideCompound> s = l.get(i);
-            p = new DNASequence(s.getSequenceAsString(), s.getCompoundSet());
+            Sequence<AminoAcidCompound> s = l.get(i);
+            p = new ProteinSequence(s.getSequenceAsString(), s.getCompoundSet());
             p.setAccession(s.getAccession());
             multipleSequenceAlignment.addAlignedSequence(p);
         }
     }
     
-    
-    
     /**
      * Budowanie drzewa metodą Neighbour Joining.
      * http://en.wikipedia.org/wiki/Neighbour_joining
-     * @return drzewo w formacie Newick
+     * @return 
      */
-    public String getTree()
+    public String NeighbourJoining()
     {
         alignSequences();
+        
+        treeConstructor = new TreeConstructor<ProteinSequence, AminoAcidCompound>(multipleSequenceAlignment, TreeType.NJ, TreeConstructionAlgorithm.PID, new ProgessListenerStub());
         String newick = null;
-        treeConstructor = new TreeConstructor<DNASequence, NucleotideCompound>(multipleSequenceAlignment, TreeType.NJ, TreeConstructionAlgorithm.PID, new ProgessListenerStub());
-        try {
+        try 
+        {
             treeConstructor.process();
-            newick = treeConstructor.getNewickString(false, true);
-        } catch (Exception ex) {
+            newick = treeConstructor.getNewickString(true, true);
+        } 
+        catch (Exception ex)
+        {
             Logger.getLogger(TreeBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
         return newick;
     }
     
-    public void getPhylipDistances(String filename)
+    public void checkAccuracy() throws Exception
     {
-        try {
-            treeConstructor.outputPhylipDistances(filename);
-        } catch (Exception ex) {
-            Logger.getLogger(TreeBuilder.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Phylogeny p = treeConstructor.getPhylogeny();
+        if (p == null)
+            throw new Exception("Run process() method before this one.");
+        CheckTreeAccuracy acc = new CheckTreeAccuracy();
+        acc.process(p, treeConstructor.getDistanceMatrix());
+        System.out.println(acc.toString());
     }
+   
     
-    
-
 }
