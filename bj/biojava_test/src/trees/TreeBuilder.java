@@ -23,7 +23,8 @@ import org.biojava3.phylo.TreeType;
 import org.forester.phylogeny.Phylogeny;
 
 /**
- *
+ * Klasa do budowania drzew filogenetycznych.
+ * 
  * @author DanielWegner
  */
 public class TreeBuilder {
@@ -32,48 +33,16 @@ public class TreeBuilder {
     private MultipleSequenceAlignment<ProteinSequence, AminoAcidCompound> multipleSequenceAlignment;
     private TreeConstructor<ProteinSequence, AminoAcidCompound> treeConstructor = null;
     
-    /*
-    private long maxMemoryUsed, timeCheckpoint;
-    private long timeStart;
-    
-    
-    private long getMaxMemoryUsed() 
-    {
-        return maxMemoryUsed = Math.max(maxMemoryUsed, Runtime.getRuntime().totalMemory());
-    }
- 
-    private long getTimeSinceCheckpoint() 
-    {
-        return System.nanoTime() - timeCheckpoint;
-    }
- 
-    private long getTimeSinceStart() 
-    {
-        return System.nanoTime() - timeStart;
-    }
- 
-    private void setCheckpoint() 
-    {
-        maxMemoryUsed = Math.max(maxMemoryUsed, Runtime.getRuntime().totalMemory());
-        timeCheckpoint = System.nanoTime();
-    }
-    
-     * 
-     */
     public TreeBuilder()
     {
         this.sequences = new LinkedList<ProteinSequence>();
         multipleSequenceAlignment = null;
-        //maxMemoryUsed = Runtime.getRuntime().totalMemory();
-        //timeStart = timeCheckpoint = System.nanoTime();
     }
     
     public TreeBuilder(List<ProteinSequence> sequences)
     {
         this.sequences = sequences;
         multipleSequenceAlignment = null;
-        //maxMemoryUsed = Runtime.getRuntime().totalMemory();
-        //timeStart = timeCheckpoint = System.nanoTime();
     }
     
     /**
@@ -103,24 +72,6 @@ public class TreeBuilder {
      */
     private void alignSequences()
     {
-        /*
-        // Poniższy kod zmniejsza zużycie pamięci
-        
-        //etap 1
-        GapPenalty gaps = new SimpleGapPenalty();
-        SubstitutionMatrix<AminoAcidCompound> pid = new SimpleSubstitutionMatrix<AminoAcidCompound>();
-        List<PairwiseSequenceScorer<ProteinSequence, AminoAcidCompound>> scorers = Alignments.getAllPairsScorers(sequences, Alignments.PairwiseSequenceScorerType.GLOBAL_IDENTITIES, gaps, pid);
-        Alignments.runPairwiseScorers(scorers);
-        
-        //etap 2
-        GuideTree<ProteinSequence, AminoAcidCompound> tree = new GuideTree<ProteinSequence, AminoAcidCompound>(sequences, scorers);
-        scorers = null;
-        
-        //etap 3
-        Profile<ProteinSequence, AminoAcidCompound> profile = Alignments.getProgressiveAlignment(tree, Alignments.ProfileProfileAlignerType.LOCAL, gaps, pid);
-        
-         * 
-         */
         multipleSequenceAlignment = new MultipleSequenceAlignment<ProteinSequence, AminoAcidCompound>();
         Profile<ProteinSequence, AminoAcidCompound> profile = Alignments.getMultipleSequenceAlignment(sequences); 
         List<AlignedSequence<ProteinSequence, AminoAcidCompound>> l = profile.getAlignedSequences();
@@ -137,7 +88,7 @@ public class TreeBuilder {
     /**
      * Budowanie drzewa metodą Neighbour Joining.
      * http://en.wikipedia.org/wiki/Neighbour_joining
-     * @return 
+     * @return drzewo w formie Newick (zanawiasowane)
      */
     public String NeighbourJoining()
     {
@@ -157,14 +108,19 @@ public class TreeBuilder {
         return newick;
     }
     
-    public void checkAccuracy() throws Exception
+    
+    public TreeAccuracyInformation checkAccuracy() throws Exception
     {
         Phylogeny p = treeConstructor.getPhylogeny();
         if (p == null)
             throw new Exception("Run process() method before this one.");
         CheckTreeAccuracy acc = new CheckTreeAccuracy();
         acc.process(p, treeConstructor.getDistanceMatrix());
-        System.out.println(acc.toString());
+        TreeAccuracyInformation tai = new TreeAccuracyInformation();
+        tai.setAverageMatrixDistance(acc.getAverageMatrixDistance());
+        tai.setAverageTreeDistance(acc.getAverageTreeDistance());
+        tai.setAverageErrorRate(acc.getAverageTreeErrorDistance());
+        return tai;
     }
    
     

@@ -24,7 +24,7 @@ public class Biojava_test {
     
     public static void main(String[] args) 
     {
-        inputGenerator = new InputGenerator("C:\\Users\\Dans\\Desktop\\biojava\\bj\\biojava_test\\resources\\genbank.txt", InputType.GENBANK);
+        inputGenerator = new InputGenerator("C:\\Users\\DanielWegner\\Desktop\\PhylogenicTree\\biojava\\bj\\biojava_test\\resources\\genbank.txt", InputType.GENBANK);
         //inputGenerator = new InputGenerator("resources/genotype.txt", InputType.FESTA);
         sequences = inputGenerator.readInput();
 
@@ -44,7 +44,7 @@ public class Biojava_test {
             System.out.println(ps.getSequenceAsString());*/
         
         TreeBuilder t = new TreeBuilder(list);
-        String s = t.getTree();
+        String s = t.NeighbourJoining();
         System.out.println(s);
         try {
             t.checkAccuracy();
