@@ -11,7 +11,6 @@ $(function(){
 	$("#form").submit(function(e){
 		e.preventDefault();
 		
-		paper.clear()
 		$("#chart").empty();
 		var phylocanvas = new Smits.PhyloCanvas(
 			{ newick: $("#data").val() },
