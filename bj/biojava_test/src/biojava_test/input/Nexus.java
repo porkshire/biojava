@@ -42,7 +42,7 @@ public class Nexus {
     public List<RichSequence> readSequences() {
         List<RichSequence> sequences = new ArrayList<RichSequence>();
         TreesBlock node = getTreeNode();
-        node.getTreeAsWeightedJGraphT("");
+        
         return sequences;
     }
     

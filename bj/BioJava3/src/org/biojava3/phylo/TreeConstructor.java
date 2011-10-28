@@ -166,6 +166,11 @@ public class TreeConstructor<C extends AbstractSequence<D>, D extends Compound> 
     }
     boolean verbose = false;
     Phylogeny p = null;
+
+    public Phylogeny getPhylogeny() {
+        return p;
+    }
+    
     DistanceMatrix matrix = null;
     DistanceMatrix copyDistanceMatrix = null;
 
