@@ -28,6 +28,11 @@ body {
 #pole {
 	resize: vertical;
 }
+.loading {
+  background: url('/img/ajax-loader.gif') no-repeat center center transparent;
+  width: 100%;
+  height: 500px;
+}
 
 
 /*== Tree styles

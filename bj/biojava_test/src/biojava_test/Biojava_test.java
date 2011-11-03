@@ -6,6 +6,13 @@ package biojava_test;
 
 import biojava_test.input.InputGenerator;
 import biojava_test.input.InputType;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,9 +30,14 @@ public class Biojava_test {
     private static List<RichSequence> sequences;
     private static InputGenerator inputGenerator;
 
-    public static void main(String[] args) {
-//        inputGenerator = new InputGenerator("C:\\Users\\DanielWegner\\Desktop\\PhylogenicTree\\biojava\\bj\\biojava_test\\resources\\genbank.txt", InputType.GENBANK);
-        inputGenerator = new InputGenerator("resources/genotype.txt", InputType.FESTA);
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream(new File("/home/lukom/Sandbox/test/genotyp")))));
+        if ('>' == br.readLine().charAt(0)) {
+            inputGenerator = new InputGenerator("/home/lukom/Sandbox/test/genotyp", InputType.FESTA);
+        } else {
+            inputGenerator = new InputGenerator("/home/lukom/Sandbox/test/genotyp", InputType.GENBANK);
+        }
+        br.close();
         sequences = inputGenerator.readInput();
 
         DNASequence seq;
@@ -47,11 +59,10 @@ public class Biojava_test {
         String s = t.NeighbourJoining();
         System.out.println(s);
         try {
-            t.checkAccuracy();
+//            t.checkAccuracy();
         } catch (Exception ex) {
             Logger.getLogger(Biojava_test.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("OK-END");
         System.exit(0);
     }
 }
