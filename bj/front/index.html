@@ -1,0 +1,83 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title></title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/libs/modernizr-2.0.6.min.js"></script>
+    
+  </head>
+  <body>
+
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="container-fluid">
+          <span class="brand">Bio Java - przetwarzanie drzew filogenetycznych</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="sidebar wide">
+        <div class="well">
+          <h3>Ustawienia</h3>
+					<form action="#" method="post" id="form" class="form-stacked">
+						<div class="clearfix">
+							<textarea id="data" name="data" rows="10">((((GU295976:0.4200102488199864,NM_00109949:24.093165715535484):4.367124557495117,NM_006196:21.234249114990234):2.8207340240478516,NM_00125188:8.118556022644043):11.576460361480713,NM_021777:11.576460361480713);</textarea>
+						</div>
+						<div class="clearfix">
+							<label for="type">Typ:</label>
+							<div class="input">
+								<select name="type" id="type">
+									<option value="rectangular">Zwykły</option>
+									<option value="circular">Kołowy</option>
+								</select>
+							</div>
+						</div>
+						<div class="clearfix">
+							<label for="width">Szerokość: <strong></strong>px</label>
+							<div class="input">
+								<input type="range" name="width" id="width" value="800" min="200" max="3000" />
+							</div>
+						</div>
+						<div class="clearfix">
+							<label for="height">Wysokość:  <strong></strong>px</label>
+							<div class="input">
+								<input type="range" name="height" id="height" value="500" min="200" max="3000" />
+							</div>
+						</div>
+						<div class="clearfix">
+							<button id="submit" class="btn large primary">Generuj drzewo</button>
+						</div>
+					</form>
+        </div>
+      </div>
+      <div class="content">
+        <!-- Main hero unit for a primary marketing message or call to action -->
+          <div id="chart"> </div>
+      </div>
+		</div>
+		<footer class="footer">
+			<p>&copy; 2011 -  Wojciech Urbański, Marcin Waligórski, Daniel Wegner, Łukasz Wróblewski</p>
+		</footer>
+		<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>-->
+		<script>window.jQuery || document.write('<script src="js/libs/jquery-1.6.2.min.js"><\/script>')</script>
+
+		<!-- scripts concatenated and minified via ant build script-->
+		<script src="js/raphael.js"></script>
+		
+		<script src="js/plugins.js"></script>
+		<script src="js/script.js"></script>
+		<!-- end scripts-->
+
+  </body>
+</html>
+
