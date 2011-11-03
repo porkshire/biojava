@@ -4,6 +4,7 @@
  */
 package trees;
 
+import java.lang.String;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -12,6 +13,8 @@ import org.biojava3.alignment.Alignments;
 import org.biojava3.alignment.template.AlignedSequence;
 import org.biojava3.alignment.template.Profile;
 import org.biojava3.core.sequence.MultipleSequenceAlignment;
+import org.biojava3.core.sequence.DNASequence;
+import org.biojava3.core.sequence.compound.NucleotideCompound;
 import org.biojava3.core.sequence.ProteinSequence;
 import org.biojava3.core.sequence.compound.AminoAcidCompound;
 import org.biojava3.core.sequence.template.Sequence;
