@@ -41,8 +41,8 @@ public class Fasta {
         while (iterator.hasNext()) {
             try {
                 sequences.add(iterator.nextRichSequence());
-                System.out.println(sequences.get(sequences.size()-1).getName());
-                System.out.println(sequences.get(sequences.size()-1).length());
+//                System.out.println(sequences.get(sequences.size()-1).getName());
+//                System.out.println(sequences.get(sequences.size()-1).length());
             } catch (NoSuchElementException ex) {
                 Logger.getLogger(Fasta.class.getName()).log(Level.SEVERE, null, ex);
             } catch (BioException ex) {

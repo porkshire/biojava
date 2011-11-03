@@ -29,9 +29,12 @@
       <div class="sidebar wide">
         <div class="well">
           <h3>Ustawienia</h3>
-					<form action="#" method="post" id="form" class="form-stacked">
+					<form action="/php/ajax.php" method="post" id="form" class="form-stacked" enctype="multipart/form-data">
 						<div class="clearfix">
-							<textarea id="data" name="data" rows="10">((((GU295976:0.4200102488199864,NM_00109949:24.093165715535484):4.367124557495117,NM_006196:21.234249114990234):2.8207340240478516,NM_00125188:8.118556022644043):11.576460361480713,NM_021777:11.576460361480713);</textarea>
+              <label for="file">Plik:</label>
+							<div class="input">
+                <input id="file" type="file" name="file" />
+              </div>
 						</div>
 						<div class="clearfix">
 							<label for="type">Typ:</label>
@@ -55,7 +58,7 @@
 							</div>
 						</div>
 						<div class="clearfix">
-							<button id="submit" class="btn large primary">Generuj drzewo</button>
+							<input type="submit" id="submit" class="btn large primary" value="Generuj drzewo" />
 						</div>
 					</form>
         </div>
