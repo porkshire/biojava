@@ -10,6 +10,6 @@ if (isset($_FILES['file'])) {
         $uchwyt = fopen('../json/dane.json', 'w');
         fwrite($uchwyt, json_encode($dane_json));
         fclose($uchwyt);
-        header('Location: /');
     }
 }
+header('Location: /');
